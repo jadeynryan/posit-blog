@@ -1,0 +1,31 @@
+---
+title: "Quarto: Parameterized Reporting"
+author: "Jadey Ryan"
+format: html
+---
+
+Parameters - what do these have in common (site ID, state, time period, etc.)?
+
+what? template for variations of report
+
+why? efficiency, reproducibility, less copy/paste errors
+
+features: flexible, multiple languages, multiple outputs, streamline/automate data analyses and reporting
+
+comparison with R Markdown
+
+In the realm of data science, the journey from raw data to actionable insights is often fraught with challenges. As we strive to communicate our findings effectively, the need for dynamic, customizable reports becomes paramount. Enter Quarto - the next-generation tool that promises to revolutionize the way we create parameterized reports, blending functionality with finesse to elevate your data science endeavors.
+
+But wait, what exactly are parameterized reports, and why should you care? Imagine a scenario where you're tasked with analyzing sales trends across different regions for your company's quarterly report. With parameterized reports, you can dynamically adjust inputs like time periods, geographical regions, or product categories, allowing stakeholders to explore the data through various lenses without delving into the nitty-gritty of code. It's like offering them a tailor-made journey through your insights, empowering them to make informed decisions effortlessly.
+
+Now, let's dive into why parameterized reports are a game-changer. Firstly, they enhance collaboration by fostering a shared understanding of complex data sets. Instead of static reports that offer limited insights, parameterized reports invite stakeholders to interact with the data, fostering a collaborative environment where ideas can flourish.
+
+Secondly, they save time and effort by streamlining the report generation process. No more tedious manual adjustments or repetitive coding - with Quarto, you can define parameters once and generate dynamic reports with just a few clicks. This not only boosts productivity but also allows you to focus on what truly matters - extracting meaningful insights from your data.
+
+So, how does Quarto stack up against its predecessors, particularly R Markdown? Well, think of Quarto as the evolution of R Markdown - it retains all the power and flexibility of R Markdown while introducing a plethora of new features designed to enhance your data science workflow.
+
+One such feature is the seamless integration of multiple languages and document formats. Whether you're crunching numbers in R, visualizing data with Python, or crafting narratives in Markdown, Quarto has you covered. This flexibility not only simplifies your workflow but also enables you to leverage the strengths of different languages to create rich, multifaceted reports.
+
+But perhaps the crown jewel of Quarto is its support for parameterized documents. With Quarto, you can effortlessly define parameters, specify their ranges or values, and generate customized reports tailored to your audience's needs. Whether you're adjusting chart axes, filtering data, or changing visualization styles, Quarto empowers you to create reports that resonate with your audience on a deeper level.
+
+In conclusion, parameterized reports represent the future of data science communication, offering a dynamic, interactive way to engage stakeholders and drive decision-making. And with Quarto leading the charge, the possibilities are truly endless. So why settle for static, one-size-fits-all reports when you can unleash the full potential of your data with Quarto? Join the revolution today and elevate your data science game to new heights!
