@@ -235,6 +235,8 @@ To learn more about the differences between R Markdown and Quarto, read through 
 
 ## More resources
 
-For more technical details, check out any of the [workshops I have led on parameterized reporting with Quarto](https://github.com/jadeynryan/parameterized-quarto-workshop). The workshops provide more detailed information, how-to instructions and example code, and exercises with code snippets you can adapt for your own projects.
+For more technical details, check out any of the [workshops I have led on parameterized reporting with Quarto](https://github.com/jadeynryan/parameterized-quarto-workshop). The workshops provide more detailed information, how-to instructions and example code, and exercises with code snippets you can adapt for your own projects. Below is the [latest workshop for R-Ladies Abuja](https://jadeyryan.quarto.pub/rladies-abuja-quarto-params/) that was recorded.
+
+{{< video https://youtu.be/kQn82pa04jQ?si=gmSIm9ECbChexulr>}}
 
 While this post talked only of parameterized reports, you can also parameterize presentations with Quarto. [Jumping Rivers](https://www.jumpingrivers.com) has a [blog post](https://www.jumpingrivers.com/blog/r-parameterised-presentations-quarto/) demonstrating the process of defining parameters within a [Quarto Reveal JS presentation](https://quarto.org/docs/presentations/revealjs/).
