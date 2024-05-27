@@ -1,31 +1,240 @@
 ---
-title: "Quarto: Parameterized Reporting"
+title: "Automating Quarto reports with parameters"
 author: "Jadey Ryan"
-format: html
+date: 2024-05-27
+format: 
+  html:
+    embed-resources: true
+    df-print: kable
 ---
 
-Parameters - what do these have in common (site ID, state, time period, etc.)?
+Data professionals transform raw data into actionable insights, which are then communicated to decision-makers in reports. Variations of the report may be generated for alternative analyses, time periods, regions, or other groupings of the data.
 
-what? template for variations of report
+There is a spectrum of ways to produce these report variations with varying levels of automation:
 
-why? efficiency, reproducibility, less copy/paste errors
+1.  **Fully manual:** run the analysis one variation at a time in Excel, R, or Python, and then manually embed the tables and figures output into each report.
 
-features: flexible, multiple languages, multiple outputs, streamline/automate data analyses and reporting
+2.  **Mostly manual:** use [literate programming](https://en.wikipedia.org/wiki/Literate_programming) with [Quarto](https://quarto.org/) to weave together the code and narrative into a separate Quarto document for each report variation.
 
-comparison with R Markdown
+3.  **Mostly automated:** parameterize a Quarto document by [defining and using computational parameters](https://quarto.org/docs/computations/parameters.html), and then generate each report variation by changing the parameters and rendering.
 
-In the realm of data science, the journey from raw data to actionable insights is often fraught with challenges. As we strive to communicate our findings effectively, the need for dynamic, customizable reports becomes paramount. Enter Quarto - the next-generation tool that promises to revolutionize the way we create parameterized reports, blending functionality with finesse to elevate your data science endeavors.
+4.  **Fully automated:** programmatically render all report variations at once by running an R or Bash/shell script to render the parameterized Quarto template with each of the defined parameters.
 
-But wait, what exactly are parameterized reports, and why should you care? Imagine a scenario where you're tasked with analyzing sales trends across different regions for your company's quarterly report. With parameterized reports, you can dynamically adjust inputs like time periods, geographical regions, or product categories, allowing stakeholders to explore the data through various lenses without delving into the nitty-gritty of code. It's like offering them a tailor-made journey through your insights, empowering them to make informed decisions effortlessly.
+If your current workflow is similar to the **Fully manual** or **Mostly manual** options above, consider how you might feel if asked to regenerate all the report variations after an update to the data. How much time and tedious labor would it take and how many potential copy/paste errors would arise?
 
-Now, let's dive into why parameterized reports are a game-changer. Firstly, they enhance collaboration by fostering a shared understanding of complex data sets. Instead of static reports that offer limited insights, parameterized reports invite stakeholders to interact with the data, fostering a collaborative environment where ideas can flourish.
+Instead, imagine the **Mostly automated** or **Fully automated** options in which you update the data and re-render all reports from a parameterized Quarto template. Think of how much more time you could have to work on higher impact projects!
 
-Secondly, they save time and effort by streamlining the report generation process. No more tedious manual adjustments or repetitive coding - with Quarto, you can define parameters once and generate dynamic reports with just a few clicks. This not only boosts productivity but also allows you to focus on what truly matters - extracting meaningful insights from your data.
+## A real-life application: automated custom soil health reports
 
-So, how does Quarto stack up against its predecessors, particularly R Markdown? Well, think of Quarto as the evolution of R Markdown - it retains all the power and flexibility of R Markdown while introducing a plethora of new features designed to enhance your data science workflow.
+Over 1,000 soil samples have been collected and analyzed to develop a baseline of soil health in Washington State as part of the [State of the Soils Assessment](https://washingtonsoilhealthinitiative.com/state-of-the-soils/). Since 2020, more than 300 participating farmers have received [customized soil health reports](https://wa-department-of-agriculture.github.io/soils/articles/examples.html), intended to help them access, understand, and translate their soil data into informed management decisions.
 
-One such feature is the seamless integration of multiple languages and document formats. Whether you're crunching numbers in R, visualizing data with Python, or crafting narratives in Markdown, Quarto has you covered. This flexibility not only simplifies your workflow but also enables you to leverage the strengths of different languages to create rich, multifaceted reports.
+Parameterized reports with Quarto allowed us to automate the process of dynamically generating hundreds of customized reports in two formats: [interactive HTML](https://soils-example-html.netlify.app/) and [printable PDF](https://drive.google.com/file/d/15M0HfRbyjUxdkMPib71NdfBB5yKWgVfW/preview). Without the powerful capabilities of Quarto, we would not have had the staff capacity to create these comprehensive reports in both formats.
 
-But perhaps the crown jewel of Quarto is its support for parameterized documents. With Quarto, you can effortlessly define parameters, specify their ranges or values, and generate customized reports tailored to your audience's needs. Whether you're adjusting chart axes, filtering data, or changing visualization styles, Quarto empowers you to create reports that resonate with your audience on a deeper level.
+Watch how over 14 reports are automatically generated one after another from an R script. Notice the ETA of 17 minutes shown in the progress bar (a feature of `purrr::pwalk()`):
 
-In conclusion, parameterized reports represent the future of data science communication, offering a dynamic, interactive way to engage stakeholders and drive decision-making. And with Quarto leading the charge, the possibilities are truly endless. So why settle for static, one-size-fits-all reports when you can unleash the full potential of your data with Quarto? Join the revolution today and elevate your data science game to new heights!
+{{< video media/render_reports.mp4>}}
+
+To learn more about this project, see the slides or watch my posit::conf(2023) talk: [*Parameterized Quarto Reports Improve Understanding of Soil Health*](https://jadeyryan.com/talks/2023-09-25_posit_parameterized-quarto/)*.*
+
+{{< video https://youtu.be/lbE5uOqfT70?si=eI5hsmrODruIxIAB >}}
+
+We also turned this Quarto project into an R package called [`soils`](https://wa-department-of-agriculture.github.io/soils/index.html), which you can learn about in this [blog post](https://washingtonsoilhealthinitiative.com/2024/03/soils-an-r-package-for-soil-health-reporting/) or this [webinar](https://youtu.be/_8m7fTjSEOk).
+
+## Parameterized reports 101
+
+Parameterized reports are similar to functions, where the Quarto template document (`.qmd` file) is the function, the parameter is the input, and the report variations are the output. You can have as few or as many parameters as you like.
+
+Parameters can be character, integer, numeric, or logical variables. The custom soil health reports used two parameters: `producer_id <chr>` and `year <int>`. These parameters were used in the report headings as [inline code](https://quarto.org/docs/computations/inline-code.html), and in code chunks to filter the data and highlight only the farmer's data. See all the source code for the soil health reports in the [`soils` GitHub repository](https://github.com/WA-Department-of-Agriculture/soils/).
+
+![Figure from [*Parameterized Quarto Reports Improve Understanding of Soil Health*](https://jadeyryan.com/talks/2023-09-25_posit_parameterized-quarto/) (Ryan 2023).](media/parameter-custom-function.png){fig-alt="A diagram depicting a Quarto .qmd file as a function, parameters as the input, and five reports for different years as the output."}
+
+### Define and access parameters
+
+Parameters are defined and accessed differently depending on whether you use the [Knitr](https://yihui.org/knitr/) or [Jupyter](https://jupyter.org/) engine.
+
+::: panel-tabset
+## Knitr
+
+Define the parameters in the YAML header with default values:
+
+``` yaml
+---
+params:
+  year: 2023
+  producer_id: ABC01
+---
+```
+
+Access the parameters in the `params` list object:
+
+```` r
+```{{r}}
+filtered <- data |> 
+  dplyr::filter(year == params$year && producer_id == params$producer_id)
+```
+````
+
+## Jupyter
+
+Designate a cell at the top of the document with the tag `parameters` and provide default values:
+
+```` python
+```{{python}}
+#| tags: [parameters]
+
+year = 2023
+producer_id = 'ABC01'
+```
+````
+
+Access the parameters by name:
+
+```` python
+```{{python}}
+import pandas as pd
+
+filtered_data = data[(data['year'] == year) & (data['producer_id'] == producer_id)]
+```
+````
+:::
+
+## Rendering
+
+### Single report with default parameters
+
+The [**Render** button in RStudio](https://quarto.org/docs/tools/rstudio.html#render-and-preview), [**Quarto: Preview** in VS Code](https://quarto.org/docs/tools/vscode.html#render-and-preview), or the `Cmd/Ctrl + Shift + K` keyboard shortcut will render and preview the report with the default parameters. You can also use the [**Render on Save** button in RStudio](https://quarto.org/docs/tools/rstudio.html#render-and-preview) or [option in VS Code](https://quarto.org/docs/tools/vscode.html#render-on-save) to automatically re-render and preview the changes after each save.
+
+### One variation at a time (mostly automated)
+
+There are a few ways to render a report variation, one at a time, without changing the default parameters in the YAML or parameters cell:
+
+1.  Using the command line with the `-P` flag:
+
+    ``` {.bash filename="Terminal"}
+    quarto render template.qmd -P year:2022 -P producer_id:XYZ01
+    ```
+
+2.  Creating a YAML file that defines the parameter values to render with and using the command line with the `--execute-params` flag:
+
+    ``` {.yaml filename="params.yml"}
+    year: 2022
+    producer_id: XYZ01
+    ```
+
+    ``` {.bash filename="Terminal"}
+    quarto render template.qmd --execute-params params.yml
+    ```
+
+3.  Using the [quarto::quarto_render()](https://quarto-dev.github.io/quarto-r/reference/quarto_render.html) function with the `execute_params` argument:
+
+    ``` {.r filename="Console or R script"}
+    quarto::quarto_render(
+      input = "template.qmd",
+      execute_params = list(
+        year = 2022,
+        producer_id = "XYZ01"
+      )
+    )
+    ```
+
+### All variations at once (fully automated)
+
+To render all report variations at once, write an R or Bash/shell script to render the parameterized Quarto template with each of the defined parameters.
+
+::: panel-tabset
+## R
+
+1.  Create a dataframe with three columns that match the [quarto::quarto_render()](https://quarto-dev.github.io/quarto-r/reference/quarto_render.html) function arguments: `output_format`, `output_file`, and `execute_params`.
+
+    ```{r}
+    #| code-fold: true
+    data <- expand.grid(
+      year = c(2022, 2023),
+      producer_id = c("ABC01", "ABC02", "XYZ01", "XYZ02"), 
+      stringsAsFactors = FALSE)
+
+    df <- data |> 
+      dplyr::mutate(
+        output_format = "html",       # Output format (html, word, etc.)
+        output_file = paste(          # Output file name
+          year, producer_id, "report.html",
+          sep = "-"
+        ),
+        execute_params = purrr::map2( # Named list of parameters
+          producer_id, year, 
+          \(producer_id, year) list(producer_id = producer_id, year = year)
+        )
+      ) |> 
+      dplyr::select(-c(producer_id, year))
+
+    df
+    ```
+
+2.  Use [purrr::pwalk()](https://purrr.tidyverse.org/reference/pmap.html) to map over each row of the dataframe and render each report variation.
+
+    ```{r}
+    #| eval: false
+    purrr::pwalk(
+      .l = df,                      # Dataframe to map over
+      .f = quarto::quarto_render,   # Quarto render function
+      input = "template.qmd"),      # Named arguments of .f
+      .progress = TRUE              # Optionally, show a progress bar
+    )
+    ```
+
+## Bash/shell
+
+I'm no expert in Bash or shell scriping and prefer R all around. However, [Solomon Moon's Posit blog post on Quarto reporting infrastructure](https://posit.co/blog/building-a-reporting-infrastructure-with-quarto/) has a section on parameterized reporting that includes demo code to render all report variations in a Bash/shell script.
+:::
+
+### End-to-end workflow
+
+Creating parameterized reports with Quarto involves a systematic approach that ensures flexibility, efficiency, and reproducibility. To help you navigate this process, let's walk through an end-to-end workflow that transforms your reporting process from manual to fully automated. This step-by-step guide takes you from drafting a basic report template to rendering all variations at once.
+
+For a demonstration of the workflow with example Quarto files and code, follow along with one of my [parameterized reporting workshops](https://github.com/jadeynryan/parameterized-quarto-workshop/).
+
+1.  **Write the report template with the default values hard-coded (i.e., don't use parameters yet).**
+
+    Begin by drafting your report with fixed values. This allows you to focus on the content and structure without worrying about parameterization. Render your report to see how it looks, review it for accuracy and clarity, and make any necessary adjustments.
+
+2.  **Once satisfied with the single variation of the report, parameterize it.**
+
+    Once you're happy with the initial version, it's time to introduce parameters. Define your parameters and set default values. In Knitr, this is done in the YAML header, whereas Jupyter uses a designated parameters cell.
+
+    Replace your hard-coded values with the corresponding parameter names. This transforms your static report into a flexible template in which the parameter names are placeholders to be replaced with the parameter values when the report is rendered.
+
+3.  **Render the single report with the default parameters.**
+
+    Render the newly parameterized report. Review the output to ensure everything works as expected. Make any necessary adjustments to refine your report.
+
+4.  **Change the parameters to extreme cases and render various scenarios.**
+
+    To ensure robustness, test your report with extreme parameter values. This could mean rendering a report with minimal data, maximal data, or using the boundary values for your parameters. This step helps identify any formatting or presentation issues that might arise in edge cases
+
+    For example, I tested my edge cases by rendering reports for a farmer who had only one sample and a farmer who had ten samples. This helped me identify and correct awkward page breaks for reports with more than eight samples.
+
+5.  **Render all variations of the report at once.**
+
+    Finally, when you're confident that your report handles all scenarios gracefully, render all desired variations with an R or Bash/shell script.
+
+## Parameters in R Markdown
+
+The concept of parameterized reports may already be a familiar concept to R Markdown users. In fact, there is a very nice quality-of-life feature for [R Markdown parameters](https://bookdown.org/yihui/rmarkdown/parameterized-reports.html) not yet implemented for Quarto: `.Rmd` documents with parameters have a a [Knit with Parameters GUI](https://bookdown.org/yihui/rmarkdown/params-knit.html#the-interactive-user-interface) built with Shiny [`miniUI`](https://github.com/rstudio/miniUI).
+
+![Figure from [*R Markdown: The Definitive Guide*](https://bookdown.org/yihui/rmarkdown/params-knit.html#the-interactive-user-interface) (Xie et al. 2023).](https://bookdown.org/yihui/rmarkdown/images/params-input.png){fig-alt="Input parameter values interactively for parameterized reports." fig-align="left"}
+
+The current workaround is to build a web app to get the input, serialize to the YAML header, and then render, as described in this [GitHub discussion](https://github.com/quarto-dev/quarto-cli/discussions/7581#discussioncomment-7603016). If a Parameters GUI for Quarto seems useful to you, upvote [quarto-dev/quarto-r issue #132](https://github.com/quarto-dev/quarto-r/issues/132).
+
+### Why use Quarto instead of R Markdown?
+
+If you don't absolutely need the Parameters GUI, you may be wondering if you should use Quarto for parameterized reports instead of R Markdown. While [R Markdown is not going away](https://yihui.org/en/2022/04/quarto-r-markdown/), Quarto is the next-generation that combines and expands upon the functionality of the R Markdown ecosystem into a single, consistent publishing system.
+
+Moreover, Quarto is multi-language and multi-engine so not only R users benefit from parameterized reports, but also users of Python, Julia, and potentially new languages yet to be developed. Similarly, Quarto easily supports multiple [report formats](https://quarto.org/docs/output-formats/all-formats.html) (PDF, Word, HTML, etc.) from a single document without the need for additional packages or unmanageable codebases.
+
+To learn more about the differences between R Markdown and Quarto, read through the [FAQ for R Markdown Users](https://quarto.org/docs/faq/rmarkdown.html).
+
+## More resources
+
+For more technical details, check out any of the [workshops I have led on parameterized reporting with Quarto](https://github.com/jadeynryan/parameterized-quarto-workshop). The workshops provide more detailed information, how-to instructions and example code, and exercises with code snippets you can adapt for your own projects.
+
+While this post talked only of parameterized reports, you can also parameterize presentations with Quarto. [Jumping Rivers](https://www.jumpingrivers.com) has a [blog post](https://www.jumpingrivers.com/blog/r-parameterised-presentations-quarto/) demonstrating the process of defining parameters within a [Quarto Reveal JS presentation](https://quarto.org/docs/presentations/revealjs/).
