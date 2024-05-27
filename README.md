@@ -1,3 +1,3 @@
 # posit-blog
 
-[Automating Quarto reports with parameters](https://raw.githack.com/jadeynryan/posit-blog/main/parameterized-reporting.html)
+[Automating Quarto reports with parameters](https://htmlpreview.github.io/?https://github.com/jadeynryan/posit-blog/blob/main/parameterized-reporting.html)
